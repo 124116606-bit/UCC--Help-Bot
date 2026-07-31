@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>UCC Canvas Help Bot</title>
+<style>
+  :root {
+    --red: #8A1538;
+    --red-dark: #6E102C;
+    --ink: #241B1E;
+    --muted: #5C4F53;
+    --bot-bg: #F7F3F4;
+    --bot-border: #E4DADD;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: var(--ink);
+    background: #EFE9EA;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
+  .app {
+    width: 100%;
+    max-width: 760px;
+    background: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: 0 16px;
+  }
+  header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 20px 4px 16px;
+    border-bottom: 3px solid var(--red);
+  }
+  .logo {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--red);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  h1 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.01em; }
+  .sub { margin: 2px 0 0; font-size: 14.5px; color: var(--muted); }
+  .badge {
+    margin-left: auto; font-size: 12.5px; font-weight: 700;
+    color: var(--red); border: 2px solid var(--red);
+    border-radius: 999px; padding: 4px 12px; white-space: nowrap;
+  }
+  #chat {
+    flex: 1; overflow-y: auto; padding: 20px 4px;
+    display: flex; flex-direction: column; gap: 14px; min-height: 320px;
+  }
+  .row { display: flex; }
+  .row.user { justify-content: flex-end; }
+  .bubble { max-width: 82%; padding: 12px 16px; }
+  .bubble.bot {
+    background: var(--bot-bg); border: 1.5px solid var(--bot-border);
+    border-radius: 4px 18px 18px 18px;
+  }
+  .bubble.user {
+    background: var(--red); color: #fff;
+    border-radius: 18px 4px 18px 18px;
+  }
+  .speaker {
+    display: block; font-size: 12px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    opacity: 0.75; margin-bottom: 4px;
+  }
+  .bubble p { margin: 0; font-size: 16.5px; line-height: 1.55; }
+  .steps { margin: 8px 0 0; padding-left: 20px; font-size: 16px; line-height: 1.6; }
+  .source {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 10px; font-size: 14px; font-weight: 700;
+    color: var(--red); background: #fff;
+    border: 1.5px solid var(--red); border-radius: 999px;
+    padding: 5px 12px; text-decoration: none;
+  }
+  .source:hover { background: var(--red); color: #fff; }
+  .suggests { display: flex; flex-wrap: wrap; gap: 8px; padding: 4px 4px 12px; }
+  .suggest {
+    font-size: 14.5px; font-weight: 600; color: var(--ink);
+    background: #fff; border: 1.5px solid #C9BCBF;
+    border-radius: 999px; padding: 8px 14px; cursor: pointer;
+    font-family: inherit;
+  }
+  .suggest:hover { border-color: var(--red); color: var(--red); }
+  .inputbar { display: flex; gap: 10px; padding: 4px 4px 8px; }
+  #q {
+    flex: 1; font-size: 17px; padding: 13px 16px;
+    border-radius: 12px; border: 2px solid #9B8C90;
+    color: var(--ink); font-family: inherit;
+  }
+  #send {
+    font-size: 17px; font-weight: 800; color: #fff;
+    background: var(--red); border: none; border-radius: 12px;
+    padding: 0 26px; cursor: pointer; font-family: inherit;
+  }
+  #send:hover { background: var(--red-dark); }
+  .footnote {
+    font-size: 13px; color: var(--muted); text-align: center;
+    padding: 8px 0 18px; margin: 0;
+  }
+  button:focus-visible, input:focus-visible, a:focus-visible {
+    outline: 3px solid var(--ink); outline-offset: 2px;
+  }
+  .srOnly {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+  .typing { color: var(--muted); font-style: italic; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo" aria-hidden="true">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+        <path d="M12 3a7 7 0 0 1 7 7v3.5a3.5 3.5 0 0 1-3.5 3.5H13l-3.6 3.2c-.64.57-1.65.12-1.65-.74V17H8.5A3.5 3.5 0 0 1 5 13.5V10a7 7 0 0 1 7-7Z" fill="#FFFFFF"/>
+        <circle cx="9.5" cy="11" r="1.3" fill="#8A1538"/>
+        <circle cx="14.5" cy="11" r="1.3" fill="#8A1538"/>
+      </svg>
+    </div>
+    <div>
+      <h1>UCC Canvas Help Bot</h1>
+      <p class="sub">Accessibility &amp; module help &middot; answers always link to the source</p>
+    </div>
+    <span class="badge">Prototype</span>
+  </header>
+
+  <main id="chat" aria-label="Conversation"></main>
+
+  <div class="suggests" id="suggests" aria-label="Suggested questions"></div>
+
+  <div class="inputbar">
+    <label for="q" class="srOnly">Type your question</label>
+    <input id="q" type="text" placeholder="Type your question&hellip;" autocomplete="off" />
+    <button id="send">Ask</button>
+  </div>
+  <p class="footnote">This prototype answers general Canvas, module and accessibility questions only &mdash; no login or personal student data is used.</p>
+  <div id="live" aria-live="polite" class="srOnly"></div>
+</div>
+
+<script>
+/* =====================================================================
+   KNOWLEDGE BASE — edit this section to add your real UCC content.
+   Each topic has: title, link, keywords (what people might type),
+   and an answer in plain language.
+   ===================================================================== */
+const TOPICS = [
+  {
+    id: "extended-time",
+    title: "Accessibility Support – Exam Accommodations",
+    link: "https://ucc.instructure.com/accessibility/accommodations",
+    keywords: ["extended time", "extra time", "exam", "accommodation", "accommodations", "quiz", "test", "dss", "disability", "extra", "time", "moderate"],
+    answer: "You can get extended exam time set up through your accommodations.",
+    steps: [
+      "Make sure you're registered with Disability Support Services (DSS) — contact them at least 2 weeks before your exam.",
+      "Go to Accessibility Support, then Accommodations, and select your exam.",
+      "Your lecturer applies the extra time under Quiz Settings → Moderate This Quiz → Add extra time."
+    ]
+  },
+  {
+    id: "screen-reader",
+    title: "Using Screen Readers with Canvas",
+    link: "https://ucc.instructure.com/accessibility/screen-readers",
+    keywords: ["screen reader", "screenreader", "jaws", "nvda", "voiceover", "blind", "vision", "contrast", "high contrast", "keyboard", "shortcuts", "accessibility settings"],
+    answer: "Canvas works well with JAWS, NVDA and VoiceOver.",
+    steps: [
+      "On Windows, use Chrome with JAWS or NVDA; on Mac, use Safari with VoiceOver.",
+      "Turn on High Contrast UI under Account → Settings → Feature Options.",
+      "Press Shift+? inside Canvas to see all keyboard shortcuts. Module pages use headings, so you can jump between sections with heading navigation."
+    ]
+  },
+  {
+    id: "employability",
+    title: "Employability Award – Details & Resources",
+    link: "https://ucc.instructure.com/modules/6/employability-award",
+    keywords: ["employability", "award", "careers", "career", "work experience", "volunteering", "module 6", "cv", "job", "skills"],
+    answer: "The Employability Award details are in Module 6 → Resources.",
+    steps: [
+      "Complete the reflection form in Module 6.",
+      "Upload evidence of at least 30 hours of activity (work experience, volunteering or skills development).",
+      "Attend one careers workshop — the Careers Service holds drop-ins every Wednesday. Applications close at the end of Semester 2."
+    ]
+  },
+  {
+    id: "navigation",
+    title: "Finding Your Way Around a Module",
+    link: "https://ucc.instructure.com/guides/module-navigation",
+    keywords: ["find", "where", "module", "modules", "slides", "lecture", "lectures", "notes", "content", "assignment", "assignments", "due", "deadline", "grades", "navigate", "missing", "syllabus", "calendar"],
+    answer: "Everything in a module follows the same layout.",
+    steps: [
+      "Lecture slides and readings are under Modules, organised by week.",
+      "Due dates are in the Syllabus tab and the Calendar; the To-Do list on your dashboard shows deadlines across all modules.",
+      "If something seems missing, it may be unpublished — contact your module coordinator."
+    ]
+  },
+  {
+    id: "staff",
+    title: "Staff Guide – Learning a Module Before Teaching It",
+    link: "https://ucc.instructure.com/guides/staff-module-overview",
+    keywords: ["teach", "teaching", "staff", "lecturer", "new module", "student view", "first time", "analytics", "accessibility checker", "walkthrough"],
+    answer: "New teaching staff can explore a module exactly as students see it.",
+    steps: [
+      "Open Settings → Student View to experience the module as a student.",
+      "Review the module structure, quizzes and assignment weightings before the semester starts.",
+      "Contact the Digital Education team for a walkthrough of analytics and the built-in Accessibility Checker."
+    ]
+  }
+];
+
+const GREETING = "Hi! I'm the UCC Canvas Help Bot. Ask me about accessibility supports, finding module content, or the employability award — I'll always point you to the source.";
+
+const SUGGESTED = [
+  "How do I set up extended time for my exam?",
+  "Where are the employability award details?",
+  "How do I use a screen reader with Canvas?",
+  "I'm teaching a module for the first time — where do I start?"
+];
+
+const NOT_FOUND = "I don't have information on that yet. For help, contact the Canvas support team or Disability Support Services (dss@ucc.ie) — and I'll pass this question on so it can be added to my knowledge base.";
+
+/* ---------- simple matching engine ---------- */
+function normalise(text) {
+  return text.toLowerCase().replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
+}
+function findTopic(question) {
+  const q = " " + normalise(question) + " ";
+  let best = null, bestScore = 0;
+  for (const t of TOPICS) {
+    let score = 0;
+    for (const kw of t.keywords) {
+      if (q.includes(" " + kw + " ")) {
+        score += kw.includes(" ") ? 3 : 1;   /* phrases count more */
+      }
+    }
+    if (score > bestScore) { bestScore = score; best = t; }
+  }
+  return bestScore >= 2 ? best : (bestScore === 1 ? best : null);
+}
+
+/* ---------- UI ---------- */
+const chat = document.getElementById("chat");
+const live = document.getElementById("live");
+const input = document.getElementById("q");
+const sendBtn = document.getElementById("send");
+const suggestWrap = document.getElementById("suggests");
+
+function addBubble(role, html) {
+  const row = document.createElement("div");
+  row.className = "row " + role;
+  const b = document.createElement("div");
+  b.className = "bubble " + role;
+  b.innerHTML = '<span class="speaker">' + (role === "user" ? "You" : "Help Bot") + "</span>" + html;
+  row.appendChild(b);
+  chat.appendChild(row);
+  chat.scrollTop = chat.scrollHeight;
+  return b;
+}
+
+function esc(s) {
+  const d = document.createElement("div");
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+function botAnswer(question) {
+  const typing = addBubble("bot", '<p class="typing">Searching UCC content&hellip;</p>');
+  setTimeout(() => {
+    typing.parentElement.remove();
+    const topic = findTopic(question);
+    if (!topic) {
+      addBubble("bot", "<p>" + esc(NOT_FOUND) + "</p>");
+      live.textContent = NOT_FOUND;
+      return;
+    }
+    let html = "<p>" + esc(topic.answer) + "</p>";
+    if (topic.steps && topic.steps.length) {
+      html += "<ol class='steps'>" + topic.steps.map(s => "<li>" + esc(s) + "</li>").join("") + "</ol>";
+    }
+    html += '<a class="source" href="' + topic.link + '" target="_blank" rel="noreferrer">' +
+      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
+      '<path d="M10 14a5 5 0 0 0 7.07 0l3-3A5 5 0 0 0 13 3.93l-1.5 1.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>' +
+      '<path d="M14 10a5 5 0 0 0-7.07 0l-3 3A5 5 0 0 0 11 20.07l1.5-1.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>' +
+      "</svg>Source: " + esc(topic.title) + "</a>";
+    addBubble("bot", html);
+    live.textContent = "Answer ready. " + topic.answer;
+  }, 600);
+}
+
+function ask(text) {
+  const q = text.trim();
+  if (!q) return;
+  addBubble("user", "<p>" + esc(q) + "</p>");
+  input.value = "";
+  botAnswer(q);
+  input.focus();
+}
+
+sendBtn.addEventListener("click", () => ask(input.value));
+input.addEventListener("keydown", (e) => { if (e.key === "Enter") ask(input.value); });
+
+SUGGESTED.forEach((s) => {
+  const b = document.createElement("button");
+  b.className = "suggest";
+  b.textContent = s;
+  b.addEventListener("click", () => ask(s));
+  suggestWrap.appendChild(b);
+});
+
+addBubble("bot", "<p>" + esc(GREETING) + "</p>");
+</script>
+</body>
+</html>
